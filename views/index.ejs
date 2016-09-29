@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html ng-app="clientApp">
+    <head>
+        <title>
+            Clients Manager
+        </title>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1" name="viewport"/>
+        <!-- Optional theme -->
+        <!-- Latest compiled and minified CSS -->
+        <link href="/assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <!-- Optional theme -->
+        <link href="/assets/lib/bootstrap/css/bootstrap-theme.css" rel="stylesheet" type="text/css"/>
+        <!-- Font Awesome CSS -->
+        <link href="/assets/fonts/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+        <!-- Web Fonts -->
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700,300&subset=latin,latin-ext" rel="stylesheet" type="text/css"/>
+        <link href="http://fonts.googleapis.com/css?family=Raleway:700,400,300" rel="stylesheet" type="text/css"/>
+        <!-- CSS style.css -->
+        <link href="/assets/css/style.css" rel="stylesheet" type="text/css"/>
+        <link href="/assets/css/ui.css" rel="stylesheet" type="text/css"/>
+        <link href="/assets/images/favicon.ico" rel="shortcut icon" type="image/x-icon">
+        </link>
+
+        <!-- WAIT TO ANGULAR LOAD -->
+        <style>
+            [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-
+            ng-cloak {
+                display: none !important;
+            }
+        </style>
+    </head>
+    <body ng-cloak="" ng-controller="mainController">
+        <div class="container">
+            <div>
+                <h1>
+                    {{ app }}
+                </h1>
+                <br/>
+            </div>
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a data-toggle="tab" href="#list">
+                        List
+                    </a>
+                </li>
+                <li>
+                    <a data-toggle="tab" href="#register" ng-click="cleanFields()">
+                        Register
+                    </a>
+                </li>
+                <li>
+                    <a data-toggle="tab" href="#about">
+                        About
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <!-----------------------------------------
+                -- LISTAGEM
+                -->
+                <div class="tab-pane fade in active" id="list">
+                    <h3>
+                        Clients
+                    </h3>
+                    <br/>
+                    <table class="table" ng-show="clients.length > 0">
+                        <tr>
+                            <th>
+                                <a href="" ng-click="orderBy('firstname')">
+                                    Name
+                                </a>
+                            </th>
+                            <th>
+                                Last name
+                            </th>
+                            <th>
+                                Gender
+                            </th>
+                            <th>
+                                Bithday
+                            </th>
+                            <th>
+                                <a href="" ng-click="orderBy('Description')">
+                                    Age
+                                </a>
+                            </th>
+                            <th>
+                                Description
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                        <tr ng-repeat="client in clients | orderBy: criterioDeOrdenacao: direcaoDaOrdenacao">
+                            <td>
+                                {{client.firstname}}
+                            </td>
+                            <td>
+                                {{client.lastname}}
+                            </td>
+                            <td>
+                                {{client.gender}}
+                            </td>
+                            <td>
+                                {{client.birthday}}
+                            </td>
+                            <td>
+                                {{calculateAge(client.birthday) }}
+                            </td>
+                            <td>
+                                {{client.description}}
+                            </td>
+                            <td>
+                                <button class="btn btn-primary" ng-click="selectId(client)" onclick="ativaTab('register')" type="button">
+                                    Edit
+                                </button>
+                                <button class="btn btn-danger" ng-click="deleteClient(client)" type="button">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                    <div ng-show="clients.length == 0">
+                        <br/>
+                        <i>
+                            There isn't client registered.
+                        </i>
+                    </div>
+                </div>
+                <!-----------------------------------------
+                -- CADASTRO
+                -->
+                <div class="tab-pane fade" id="register">
+                    <h3>
+                        Register
+                    </h3>
+                    <br/>
+                    <form class="form-horizontal" name="clientForm">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="nameClient">
+                                Name:
+                            </label>
+                            <div class="col-sm-5">
+                                <input autofocus="autofocus" class="form-control" id="nameClient" name="nameClient" ng-model="firstname.text" ng-required="" type="text">
+                                </input>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="lastnameClient">
+                                Last name:
+                            </label>
+                            <div class="col-sm-5">
+                                <input class="form-control" id="lastnameClient" name="lastnameClient" ng-model="lastname.text" ng-required="true" type="text">
+                                </input>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="genderClient">
+                                Gender:
+                            </label>
+                            <div class="col-md-2">
+                                <select class="form-control" id="genderClient" name="genderClient" ng-model="gender.text" ng-required="true">
+                                    <option value="">
+                                    </option>
+                                    <option value="m">
+                                        Male
+                                    </option>
+                                    <option value="f">
+                                        Female
+                                    </option>
+                                </select>
+                            </div>
+                            <label class="control-label col-sm-1" for="birthdayClient">
+                                Birthday:
+                            </label>
+                            <div class="col-md-2">
+                                <input class="form-control" limit="true" mask="39/19/9999" name="birthdayClient" ng-model="birthday.text" ng-required="true" type="text">
+                                </input>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="descriptionClient">
+                                Description:
+                            </label>
+                            <div class="col-sm-5">
+                                <textarea class="form-control" id="descriptionClient" name="descriptionClient" ng-model="description.text" rows="5">
+                                </textarea>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="form-group">
+                        <div class="text-left">
+                            <div aria-label="Button Group" class="btn-group" id="button1idGroup" role="group">
+                                <button class="btn btn-info" ng-click="saveClient()" ng-disabled="clientForm.$invalid" type="button">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-----------------------------------------
+                -- SOBRE
+                -->
+                <div class="tab-pane fade" id="about">
+                    <h3>
+                        About
+                    </h3>
+                    <br/>
+                    <p>
+                        Project MEAN Stack developed by Fernando Kawano.
+                        <br/>
+                        <a alt="Fernando Kawano" href="https://br.linkedin.com/in/fernandokawanoprogramador" target="_blank">
+                            Linkedin
+                        </a>
+                    </p>
+                    <br/>
+                    <br/>
+                    <h3>
+                        MEAN Stack
+                    </h3>
+                    <br/>
+                    <div>
+                        <img align="middle" alt="Mean Stack" class="sobreImagem" src="/assets/images/meanStack.png">
+                        </img>
+                        <br/>
+                        <br/>
+                        <p>
+                            Simple CRUD of Clients using MEAN Stack.
+                            <ul>
+                                <li>
+                                    <b>
+                                        MongoDB:
+                                    </b>
+                                    MongoDB is the leading NoSQL database, empowering businesses to be more agile and scalable.
+                                    <br/>
+                                    To create a free account on MongoDb goes to: www.mongolab.com
+                                </li>
+                                <li>
+                                    <b>
+                                        Express:
+                                    </b>
+                                    Express is a minimal and flexible node.js web application framework, providing a robust set of features for building single and multi-page, and hybrid web applications.
+                                </li>
+                                <li>
+                                    <b>
+                                        AngujarJs:
+                                    </b>
+                                    AngularJS lets you extend HTML vocabulary for your application. The resulting environment is extraordinarily expressive, readable, and quick to develop.
+                                </li>
+                                <li>
+                                    <b>
+                                        NodeJs:
+                                    </b>
+                                    Node.js is a platform built on Chrome's JavaScript runtime for easily building fast, scalable network applications.
+                                </li>
+                            </ul>
+                            <p>
+                                <a href="http://mean.io/#!/">
+                                    Mean.io
+                                </a>
+                            </p>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <%- include('footer') %>
+        </div>
+        <!--
+        -- IMPORT JAVA SCIRPT
+        -->
+        <!--
+         JQUERY -->
+        <script crossorigin="anonymous" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" src="https://code.jquery.com/jquery-2.2.4.min.js">
+        </script>
+        <!-- 
+        ANGULAR JS -->
+        <script src="/assets/lib/angular/angular.min.js" type="text/javascript">
+        </script>
+        <!--
+        ANGULAR MESSAGES -->
+        <script src="/assets/lib/angular/angular-messages.min.js" type="text/javascript">
+        </script>
+        <!--
+        ANGULAR LOCALE PT-BR -->
+        <script src="/assets/lib/angular/angular-locale_pt-br.js" type="text/javascript">
+        </script>
+        <!-- 
+        BOOTSTRAP JS -->
+        <script src="/assets/lib/bootstrap/js/bootstrap.min.js" type="text/javascript">
+        </script>
+        <!-- 
+        SCRIPT.JS -->
+        <script src="/assets/js/script.js" type="text/javascript">
+        </script>
+        <!-- 
+        ng mask.JS -->
+        <script src="/assets/lib/angular/ngMask.min.js" type="text/javascript">
+        </script>
+        <!-- 
+        APP.JS ANGULAR -->
+        <script src="/assets/js/app.js" type="text/javascript">
+        </script>
+        <!-- 
+        ANGULAR CONTROLLER -->
+        <script src="/assets/js/controllers/clientsCtrl.js">
+        </script>
+    </body>
+</html>
