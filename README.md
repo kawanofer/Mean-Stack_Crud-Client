@@ -5,6 +5,7 @@ Mean Stack = MongoDb, Express, AngularJs and NodeJs.
 
 -----------------------------------------
 
+# SETUP
 How to Start the project.
 
 * Download https://www.npmjs.com/
@@ -12,7 +13,7 @@ How to Start the project.
 * Using prompt terminal, install all node modules.
 > npm install
 
-* Create your mongoDB account at mongolab.com or install in or computer.
+* Create your mongoDB account at mongolab.com or install it.
 
 * Configure your mongoDB account /config/config.json (username and password);
 
